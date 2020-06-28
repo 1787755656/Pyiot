@@ -1,6 +1,6 @@
 # Pyiot
 一个基于IOTQQ的Python框架。  
-[点此查看开发文档](https://www.github.com/KongChengPro/Pyiot/tree/master//doc)
+[点此查看开发文档](https://www.github.com/KongChengPro/Pyiot/tree/master/doc)
 
 ## 特别鸣谢
 （排名不分先后）  
