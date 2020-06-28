@@ -11,3 +11,4 @@
 ## 函数
 * `pi.set_prefix(str)`  
 设置命令前缀
+* `pi.reply(str, Event, int)`

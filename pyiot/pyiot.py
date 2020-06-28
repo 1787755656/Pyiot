@@ -97,7 +97,7 @@ class Pyiot:
 
         return decorate
 
-    def reply(self, content, eve, at_user=0):
+    def send_message(self, content, eve, at_user=0):
         data = {
             # 如果是群聊的话，用群号，其它（好友和私聊）用QQ号
             "toUser": eve.from_group_id if eve.msg_from_type == 2 else eve.from_user_qq,

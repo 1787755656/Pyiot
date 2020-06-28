@@ -28,13 +28,13 @@ def a(event):  # 这个函数突然不知道该取啥名，就随便取了一个
     text = event.main_text.strip()
     if event.msg_from_type == 2:
         # at_user 传入一个QQ号，在发送消息时at该QQ
-        pi.reply(" "+text, event, at_user=event.from_user_qq)
+        pi.send_message(" " + text, event, at_user=event.from_user_qq)
     else:
-        pi.reply(text, event)
+        pi.send_message(text, event)
 
 # ---------------------------------------------------------------------
 # 给你的机器人发送：“.print Pyiot is a Python framework based on IOTQQ.”
 # 注意别漏了“.”，这是你设置的prefix
-# 不出意外的话，他会@你并回复：Pyiot is a Python framework based on IOTQQ.
+# 不出意外的话，他会@你并发送：Pyiot is a Python framework based on IOTQQ.
 # ---------------------------------------------------------------------
 
