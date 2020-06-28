@@ -4,7 +4,7 @@
 
 ## 特别鸣谢
 （排名不分先后）  
-`[IOTQQ](https://github.com/IOTQQ/IOTQQ)
+[IOTQQ](https://github.com/IOTQQ/IOTQQ)
 ：Pyiot的诞生离不开IOTQQ的支持  
 [Pycharm](https://www.jetbrains.com/pycharm/)
 ：Pycharm大大加快了Pyiot的开发进度  
