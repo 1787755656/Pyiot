@@ -19,6 +19,7 @@ class Pyiot:
         self.qq = qq
         self.command_friend_dict = {}
         self.command_group_dict = {}
+        self.prefix = ""
 
     def start(self):
         """ 启动Pyiot """
@@ -45,17 +46,21 @@ class Pyiot:
                 print(message)
                 __on_message("friend", message)
 
-            def __on_message(type, message):
-                data = message["CurrentPacket"]["Data"]
-                message_content = data["Content"]
-                if type == "friend":
-                    for key, value in self.command_friend_dict.items():
+            def __on_message(msg_type, message):
+                message_content = message["CurrentPacket"]["Data"]["Content"]
+                if msg_type == "friend":
+                    command_dict = self.command_friend_dict
+                    msg_type_num = 1
+                elif msg_type == "group":
+                    command_dict = self.command_group_dict
+                    msg_type_num = 2
+                else:
+                    raise ValueError('type must be "friend" or "group"')
+                for key, value in command_dict.items():
+                    if message_content[:len(self.prefix)] == self.prefix:
+                        message_content = message_content.lstrip(self.prefix)
                         if re.match(key, message_content):
-                            value(event.Event(data))
-                elif type == "group":
-                    for key, value in self.command_group_dict.items():
-                        if re.match(key, message_content):
-                            value(event.Event(data))
+                            value(event.Event(message, msg_type_num, self.prefix + key if self.prefix else key))
 
             @sio.on('OnEvents')
             def on_events(message):
@@ -94,8 +99,9 @@ class Pyiot:
 
     def reply(self, content, eve, at_user=0):
         data = {
-            "toUser": eve.user,
-            "sendToType": eve.send_to_type,
+            # 如果是群聊的话，用群号，其它（好友和私聊）用QQ号
+            "toUser": eve.from_group_id if eve.msg_from_type == 2 else eve.from_user_qq,
+            "sendToType": eve.msg_from_type,
             "sendMsgType": "TextMsg",
             "content": content,
             "groupid": 0,
@@ -109,6 +115,9 @@ class Pyiot:
             "funcname": "SendMsg",
             "timeout": 19
         }
+        print(data)
+        print(url)
+        print(params)
         response = requests.post(url=url, headers=headers, data=json.dumps(data), params=params)
         logging.debug(response.content)
 
