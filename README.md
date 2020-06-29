@@ -14,7 +14,7 @@
 示例：`@pi.on_group_command("(你好|hello)")`
 
 #### 函数  
-* `pi.send_message(self, content, eve, at_user=0)
+* `pi.send_message(self, content, eve, at_user=0)`
 发送消息
 
 ## 特别鸣谢
