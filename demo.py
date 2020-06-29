@@ -32,9 +32,9 @@ def a(event):  # 这个函数突然不知道该取啥名，就随便取了一个
     text = event.main_text.strip()
     if event.msg_from_type == 2:
         # at_user 传入一个QQ号，在发送消息时at该QQ
-        pi.send_message(" " + text, event, at_user=event.from_user_qq)
+        pi.reply(" " + text, event, at_user=event.from_user_qq)
     else:
-        pi.send_message(text, event)
+        pi.reply(text, event)
 
 # ---------------------------------------------------------------------
 # 给你的机器人发送：“.print Pyiot is a Python framework based on IOTQQ.”
@@ -51,13 +51,13 @@ def b(event):  # 这个函数突然不知道该取啥名，就随便取了一个
     try:
         num = int(event.main_text[0])
     except ValueError:
-        pi.send_message("ERROR: rp后必须跟着一个阿拉伯数字", event)
+        pi.reply("ERROR: rp后必须跟着一个阿拉伯数字", event)
         # 你可以使用pyiot自带的logger记录log（第一个参数是Tag，第二个是正文）
         # logger共有五个等级["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"]
         pi.logger.warning("demo", "有用户尝试输入一个非法数字")
         return
     for i in range(int(num)):
-        pi.send_message(event.main_text[1:], event)
+        pi.reply(event.main_text[1:], event)
         time.sleep(1)
 
 # ---------------------------------------------------------------------

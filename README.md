@@ -17,7 +17,10 @@
 #### 函数  
 * `pi.send_message(self, content, eve, at_user=0)`
 发送消息
-
+## 更新日志
+2020/6/29 - 将send_message方法更改为reply
+## 更新计划
+- [ ] 提供message_builder类，用于构建一条消息，使用send方法发送
 ## 特别鸣谢
 （排名不分先后）  
 [IOTQQ](https://github.com/IOTQQ/IOTQQ)
