@@ -8,7 +8,7 @@
 传入一个正则表达式，当群聊消息成功匹配到该正则时调用被装饰函数    
 示例：`@pi.on_group_command("(你好|hello)")`
 
-## 函数
-* `pi.set_prefix(str)`  
-设置命令前缀
-* `pi.reply(str, Event, int)`
+## 函数  
+* `pi.send_message(self, content, eve, at_user=0)
+发送消息
+* `pi.`
