@@ -20,6 +20,7 @@ class Pyiot:
         self.command_friend_dict = {}
         self.command_group_dict = {}
         self.prefix = ""
+        self.bot_status = False
 
     def start(self):
         """ 启动Pyiot """
@@ -35,32 +36,38 @@ class Pyiot:
             @sio.on('OnGroupMsgs')
             def on_group_msgs(message):
                 """ 监听群组消息 """
-                self.logger.info("接收", "收到群组消息")
-                self.logger.debug(message)
                 __on_message("group", message)
 
             @sio.on('OnFriendMsgs')
             def on_friend_msgs(message):
                 """ 监听好友消息 """
-                self.logger.info("接收", "收到好友消息")
-                self.logger.debug(message)
                 __on_message("friend", message)
 
             def __on_message(msg_type, message):
+                if self.bot_status:
+                    return
                 message_content = message["CurrentPacket"]["Data"]["Content"]
                 if msg_type == "friend":
+                    self.logger.info("接收", "收到好友消息")
+                    self.logger.debug(message)
                     command_dict = self.command_friend_dict
                     msg_type_num = 1
+                    from_user_qq = message["CurrentPacket"]["Data"]["FromUin"]
                 elif msg_type == "group":
+                    self.logger.info("接收", "收到群组消息")
+                    self.logger.debug(message)
                     command_dict = self.command_group_dict
                     msg_type_num = 2
+                    from_user_qq = message["CurrentPacket"]["Data"]["FromUserId"]
                 else:
-                    raise ValueError('type must be "friend" or "group"')
+                    raise ValueError("Param `msg_type` must be `friend` or `group` (not {})".format(msg_type))
+                if str(from_user_qq) == str(self.qq):
+                    return
                 for key, value in command_dict.items():
-                    if message_content[:len(self.prefix)] == self.prefix:
-                        message_content_no_prefix = message_content.lstrip(self.prefix)
-                        if re.match(key, message_content_no_prefix):
-                            value(event.Event(message, msg_type_num, self.prefix + key if self.prefix else key))
+                    cmd = self.prefix + key if self.prefix else key
+                    if re.match(cmd, message_content):
+                        self.logger.info("框架事件", "收到了", message_content, "前往调用", value.__name__)
+                        value(event.Event(message, msg_type_num, cmd))
 
             @sio.on('OnEvents')
             def on_events(message):
@@ -80,7 +87,7 @@ class Pyiot:
     def on_friend_command(self, c):
         def decorate(func):
             self.command_friend_dict[c] = func
-            self.logger.debug("框架事件", f"将{func.__name__}注册为好友命令的回调函数，命令为：{c}", "注册")
+            self.logger.debug("框架事件", "将{}注册为好友命令的回调函数，命令为：{}".format(func.__name__, c))
             return func
 
         return decorate
@@ -88,16 +95,17 @@ class Pyiot:
     def on_group_command(self, c):
         def decorate(func):
             self.command_group_dict[c] = func
-            self.logger.debug("框架事件", "将{func.__name__}注册为群聊命令的回调函数，命令为：{c}", "注册")
+            self.logger.debug("框架事件", "将{}注册为群命令的回调函数，命令为：{}".format(func.__name__, c))
             return func
 
         return decorate
 
-    def reply(self, content, eve, at_user=0):
+    def msg_reply(self, content, eve, at_user=0):
         if isinstance(content, str):
+            to_qq = eve.from_group_id if eve.msg_from_type == 2 else eve.from_user_qq
             data = {
-                # 如果是群聊的话，用群号，其它（好友和私聊）用QQ号
-                "toUser": eve.from_group_id if eve.msg_from_type == 2 else eve.from_user_qq,
+                # 群聊用群号，好友用QQ号
+                "toUser": to_qq,
                 "sendToType": eve.msg_from_type,
                 "sendMsgType": "TextMsg",
                 "content": content,
@@ -114,4 +122,14 @@ class Pyiot:
                 "timeout": 19
             }
             response = requests.post(url=url, headers=headers, data=json.dumps(data), params=params)
-            self.logger.debug("接收", "响应内容：", response.content)
+        else:
+            raise ValueError("Param `content` must be a str (not {})".format(type(content)))
+
+    def bot_open(self):
+        self.bot_status = False
+
+    def bot_close(self):
+        self.bot_status = False
+
+    def bot_get_status(self):
+        return self.bot_status

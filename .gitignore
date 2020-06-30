@@ -1,5 +1,5 @@
-# test file
-test.*
+# "ignore" file
+ignore_*
 
 # pycharm
 .idea/
