@@ -1,21 +1,19 @@
 # Pyiot
 一个基于IOTQQ的Python框架。  
-- [Pyiot](#pyiot)
-  * [开发文档](#user-content-开发文档)
-      - [请注意](#---)
-    + [快速上手 / DEMO](#-------demo)
-  * [更新日志](#)
-    + [2020/6/29:](#2020-6-29-)
-    + [2020/6/30:](#2020-6-30-)
-  * [更新计划](#----)
-    + [API](#api)
-      - [Pyiot](#pyiot-1)
-      - [装饰器](#---)
-      - [函数](#--)
-  * [特别鸣谢](#----)
+* [Pyiot](#pyiot)
+  * [开发文档](#开发文档)
+      * [请注意](#请注意)
+    * [快速上手 / DEMO](#快速上手--demo)
+  * [更新日志](#更新日志)
+    * [2020/6/29](#2020629)
+    * [2020/6/30](#2020630)
+  * [更新计划](#更新计划)
+    * [API](#api)
+      * [Pyiot](#pyiot-1)
+      * [装饰器](#装饰器)
+      * [函数](#函数)
+  * [特别鸣谢](#特别鸣谢)
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
- 
 ## 开发文档
 #### 请注意
 * 该框架暂不支持发送和接收私聊消息（即没有好友，通过群聊等方式发起会话）
@@ -25,10 +23,10 @@
 1. 第一个机器人：[first_bot.py](https://www.github.com/KongChengPro/Pyiot/tree/master/demo_first_bot.py)
 2. 聊天机器人：[smart_bot.py](https://www.github.com/KongChengPro/Pyiot/tree/master/demo_smart_bot.py)
 ## 更新日志
-### 2020/6/29:  
+### 2020/6/29: 
 * 将send_message方法更改为reply
 * prefix现在支持正则
-### 2020/6/30:
+### 2020/6/30
 * 优化接口命名
 > `reply` -> `msg_reply`
 * 新增`bot_open`, `bot_close`, `bot_status`方法
