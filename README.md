@@ -1,5 +1,16 @@
 # Pyiot
 一个基于IOTQQ的Python框架。  
+<!-- 
+目录格式（参考https://my.oschina.net/antsky/blog/1475173）：
+[标题名称](锚点名称)
+锚点名称为：
+把标题名称中的
+空格替换为"-"
+大写替换为小写
+删去"."
+其余特殊符号去除？（猜想，因为"/"会被去除）
+同名锚点，第一个名称不变，其余在末尾加上"-1", "-2", "-3"...以此类推
+ -->
 * [Pyiot](#pyiot)
   * [开发文档](#开发文档)
       * [请注意](#请注意)
@@ -27,27 +38,21 @@
 * 将send_message方法更改为reply
 * prefix现在支持正则
 ### 2020/6/30
-* 优化接口命名
-> `reply` -> `msg_reply`
+* 优化接口命名  
+`reply` -> `msg_reply`
 * 新增`bot_open`, `bot_close`, `bot_status`方法
 * 增加了一个智能聊天机器人的demo
+* 增加了一个状态控制的demo
 * 增加了一个实例化Pyiot的的可选参数`socketio_logger`
-* 在`__init__.py`中加入了一个`get_pyiot`函数，现在可以使用如下方式启动pyiot
-```
-import pyiot
-
-pi = pyiot.get_pyiot("http://127.0.0.1:8888", "机器人QQ号", log_level="DEBUG", socketio_logger=False)
-pi.start()
-```
 ## 更新计划
 - [ ] 提供message_builder类，用于构建一条消息，使用send方法发送
 ### API
 #### Pyiot
 使用如下方式启动pyiot
 ```
-import pyiot
+from pyiot import pyiot
 
-pi = pyiot.get_pyiot("http://127.0.0.1:8888", "机器人QQ号", log_level="DEBUG", socketio_logger=False)
+pi = pyiot.Pyiot("http://127.0.0.1:8888", "机器人QQ号", log_level="DEBUG", socketio_logger=False)
 pi.start()
 ```
 #### 装饰器
@@ -61,8 +66,15 @@ pi.start()
 #### 函数  
 * `pi.msg_reply(self, content, eve, at_user=0)`
 发送消息，依次传入：消息内容，event，要at的QQ
-* `pi.bot_close`, `pi.bot_open`, `pi.bot_status`
+* `pi.bot_close`, `pi.bot_open`, `pi.bot_get_status`
 依次为：关闭机器人，打开机器人，获取机器人状态（关闭返回False，打开返回True）
+#### 属性
+* `pi.admins: List[int]`
+列表中填写管理员QQ号（仅管理员可使用open, close, status命令）
+* `pi.bot_command_open` 设置打开机器人的指令（不支持正则）
+* `pi.bot_command_close` 设置关闭机器人的指令（不支持正则）
+* `pi.bot_command_status` 设置查询机器人状态的指令（不支持正则）
+* `pi.prefix` 设置命令前缀（支持正则）
 ## 特别鸣谢
 （排名不分先后）  
 [IOTQQ](https://github.com/IOTQQ/IOTQQ)

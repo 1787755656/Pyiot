@@ -2,6 +2,7 @@
 import json
 import re
 import threading
+from typing import List, Any
 
 import requests
 import socketio
@@ -20,7 +21,11 @@ class Pyiot:
         self.command_friend_dict = {}
         self.command_group_dict = {}
         self.prefix = ""
-        self.bot_status = False
+        self.bot_status = True
+        self.bot_command_open = None
+        self.bot_command_close = None
+        self.bot_command_status = None
+        self.admins = []
 
     def start(self):
         """ 启动Pyiot """
@@ -44,8 +49,6 @@ class Pyiot:
                 __on_message("friend", message)
 
             def __on_message(msg_type, message):
-                if self.bot_status:
-                    return
                 message_content = message["CurrentPacket"]["Data"]["Content"]
                 if msg_type == "friend":
                     self.logger.info("接收", "收到好友消息")
@@ -61,13 +64,20 @@ class Pyiot:
                     from_user_qq = message["CurrentPacket"]["Data"]["FromUserId"]
                 else:
                     raise ValueError("Param `msg_type` must be `friend` or `group` (not {})".format(msg_type))
+                # 过滤消息来源是自身的消息
                 if str(from_user_qq) == str(self.qq):
+                    return
+                # 检测是否为系统命令，如果是则拦截
+                if self.bot_command(event.Event(message, msg_type_num)):
+                    return
+                # 如果机器人状态是关闭则不执行命令
+                if not self.bot_status:
                     return
                 for key, value in command_dict.items():
                     cmd = self.prefix + key if self.prefix else key
                     if re.match(cmd, message_content):
                         self.logger.info("框架事件", "收到了", message_content, "前往调用", value.__name__)
-                        value(event.Event(message, msg_type_num, cmd))
+                        value(event.Event(message, msg_type_num, command=cmd))
 
             @sio.on('OnEvents')
             def on_events(message):
@@ -127,9 +137,41 @@ class Pyiot:
 
     def bot_open(self):
         self.bot_status = False
+        self.logger.info("机器人", "机器人已开启")
 
     def bot_close(self):
         self.bot_status = False
+        self.logger.info("机器人", "机器人已关闭")
 
     def bot_get_status(self):
         return self.bot_status
+
+    def bot_command(self, eve: event.Event):
+        message_content = eve.main_text
+        method = None
+        # 打开
+        if self.bot_command_open and isinstance(self.bot_command_open, str):
+            if message_content == self.bot_command_open:
+                method = 1
+        # 关闭
+        if self.bot_command_close and isinstance(self.bot_command_close, str):
+            if message_content == self.bot_command_close:
+                method = 2
+        # 查看状态
+        if self.bot_command_status and isinstance(self.bot_command_status, str):
+            if message_content == self.bot_command_status:
+                method = 3
+
+        if method is not None:
+            # 查看是否为管理员
+            if eve.from_user_qq not in self.admins:
+                self.msg_reply("你没有权限 打开/关闭 机器人", eve)
+            elif method == 1:
+                self.bot_open()
+            elif method == 2:
+                self.bot_close()
+            elif method == 3:
+                self.msg_reply("状态：" + "开启" if self.bot_status else "关闭", eve)
+            return True
+        else:
+            return False

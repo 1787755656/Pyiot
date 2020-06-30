@@ -1,12 +1,12 @@
 # -*- coding: UTF-8 -*-
-
 # ！！！！！！！！！！！！！！！！！！！！！
 # 在开始前请确保你已经在iotqq上登陆了该账号
 # ！！！！！！！！！！！！！！！！！！！！！
 
 import time
 
-import pyiot
+from pyiot import pyiot
+
 
 # 实例化pyiot
 # 参数分别为：
@@ -14,7 +14,7 @@ import pyiot
 # 机器人QQ号
 # 日志等级，可选择["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"]其一
 # socketio日志，为False则不输出，为True则输出
-pi = pyiot.get_pyiot("http://127.0.0.1:8888", "你机器人的QQ", log_level="INFO", socketio_logger=False)
+pi = pyiot.Pyiot("http://127.0.0.1:8888", "你机器人的QQ", log_level="INFO", socketio_logger=False)
 pi.start()  # 启动pyiot
 
 # 设置前缀（只有开头是这个的消息才能触发命令，不支持正则表达式）

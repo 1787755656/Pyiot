@@ -5,9 +5,9 @@ import urllib.parse
 
 import requests
 
-import pyiot
+from pyiot import pyiot
 
-pi = pyiot.get_pyiot("http://127.0.0.1:8888", "机器人的QQ号", log_level="DEBUG", socketio_logger=False)
+pi = pyiot.Pyiot("http://127.0.0.1:8888", "机器人的QQ号", log_level="DEBUG", socketio_logger=False)
 pi.start()  # 启动pyiot
 pi.prefix = r""  # 将前缀设为空字符串，即任何时候都可以匹配
 

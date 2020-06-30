@@ -26,9 +26,7 @@ class SimpleLogger:
             raise ValueError('"level" must be one of ["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"]')
 
     def printer(self, level, tag="default", *args):
-        text = ""
-        for c in args:
-            text = "{}{} ".format(text, c)
+        text = " ".join(args)
         print("{} - {} - [{}] - {}".format(self.__get_date(), level, tag, text))
 
     def debug(self, tag, *args):
